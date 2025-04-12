@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ItalinaBrainrotLang Editor</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: monospace;
+            margin: 0;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        canvas {
+            width: 100%;
+            height: 500px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>ItalinaBrainrotLang Editor</h2>
+    <textarea id="code"></textarea>
+    <br>
+    <button onclick="runCode()">Executar</button>
+
+    <canvas id="outputCanvas" width="800" height="500"></canvas>
+
+    <script src="https://italinabrainrotlang.netlify.app/r-1.0.0/index.js"></script>
+    <script>
+        const canvas = document.getElementById('outputCanvas');
+        const ctx = canvas.getContext('2d');
+        let y = 40;
+
+        function clearCanvas() {
+            ctx.fillStyle = '#1e1e1e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            y = 40;
+        }
+
+        function customLog(msg) {
+            ctx.fillStyle = 'white';
+            ctx.font = '20px monospace';
+            ctx.fillText(msg, 20, y);
+            y += 28;
+            if (y > canvas.height - 30) {
+                clearCanvas();
+                customLog("...continuando...");
+            }
+        }
+
+        function runCode() {
+            clearCanvas();
+            customLog("Running...");
+
+            const delay = Math.floor(Math.random() * 4000) + 1000;
+            setTimeout(() => {
+                const code = document.getElementById('code').value;
+                const interpreter = new Interpreter();
+
+                const originalLog = console.log;
+                console.log = customLog;
+
+                try {
+                    interpreter.interpret(code);
+                } catch (e) {
+                    customLog("Error: " + e.message);
+                }
+
+                console.log = originalLog;
+            }, delay);
+        }
+
+        document.getElementById('code').value = `italianaAi saudacao()
+    talalero tralala -> "Olá, Mundo!"
+brain;
+
+Frulli Frulla -> name -> "brainrot";
+Frulli Frulla -> age -> 5;
+
+Trulimero Trulicina age > 20:
+    talalero tralala -> "Adult"
+Frigo Camello;
+    talalero tralala -> "Minor"
+brain;
+
+saudacao()`;
+
+        clearCanvas();
+    </script>
+
+</body>
+</html>
